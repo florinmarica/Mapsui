@@ -48,5 +48,28 @@ namespace Mapsui.Samples.Common.Maps
             //    Style = null
             //};
         //}
+        
+        private ILayer LayerRouteW(Route route)
+        {
+            List<Point> p = new List<Point>();
+            foreach (Coordinate coordinate in route.Shape)
+            {
+                var spherical = SphericalMercator.FromLonLat(coordinate.Longitude, coordinate.Latitude);
+                p.Add(new Point(spherical.X,spherical.Y));
+            }
+            LineString ls = new LineString(p);
+            Feature f = new Feature
+            {
+                Geometry = ls,
+                ["Name"] = "Line 1",
+                Styles = new List<IStyle> { new VectorStyle { Line = new Pen(Color.Blue, 4) } }
+            };
+            return new MemoryLayer
+            {
+                Name = "Route",
+                DataSource = new MemoryProvider(f),
+                Style = null
+            };
+        }
     }
 }
